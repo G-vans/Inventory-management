@@ -3,7 +3,15 @@
 
   <%# display products as table %>
   <h1>Products</h1>
-
+  <%= form_with url: products_path, class: "search-form", method: :get do |form| %>
+      <div class="input-group">
+        <%= form.text_field :name, value: params[:name], class: "form-control", placeholder: "Search for product by name" %>
+          <div class="input-group-append">
+            <%= form.submit "Search", class: "btn btn-primary" %>
+          </div>
+      </div>
+  <% end %>
+<br />
   <table class="table table-bordered">
     <thead>
       <tr>
