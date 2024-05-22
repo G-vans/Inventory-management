@@ -15,22 +15,21 @@
   </thead>
   <tbody>
     <% @products.each do |product| %>
+      <tr>
         <td><%= product.name %></td>
         <td><%= product.description %></td>
         <td><%= product.price %></td>
         <td>
-        <%if product.quantity <= 10 %>
-        (<%= product.quantity %>)&nbsp;
-        <span class="badge text-bg-danger">
-                     Low Stock
-                  </span>
-                  <% else %>
-                  (<%= product.quantity %>)&nbsp;
-                  <span class="badge text-bg-success">
-                     Normal Stock
-                  </span>
-                <% end %>
+          <% if product.quantity <= 10 %>
+            (<%= product.quantity %>)&nbsp;
+            <span class="badge text-bg-danger">Low Stock</span>
+          <% else %>
+            (<%= product.quantity %>)&nbsp;
+            <span class="badge text-bg-success">Normal Stock</span>
+          <% end %>
+        </td>
         <td>
+          <%= link_to "Show", product_path(product), class: 'btn btn-success' %>
           <%= link_to "Edit", edit_product_path(product), class: "btn btn-primary" %>
           <%= link_to "Delete", product_path(product), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger" %>
         </td>
