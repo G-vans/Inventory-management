@@ -4,7 +4,17 @@ class ProductsController < ApplicationController
   # GET /products or /products.json
   def index
     @products = Product.order(:created_at)
-  end
+    @low_stock_products = @products.select { |product| product.quantity <= 10 }
+    if @low_stock_products.present?
+      low_stock_names = @low_stock_products.map(&:name).join(", ")
+      flash.now[:notice] = "#{low_stock_names} #{'are' if @low_stock_products.count > 1} low on stock"
+    end
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
+  end  
+  
 
   # GET /products/1 or /products/1.json
   def show
@@ -74,6 +84,23 @@ class ProductsController < ApplicationController
       format.html { redirect_to products_url }
       format.turbo_stream
     end
+  end
+
+  def update_stock
+    if product.quantity <= 10
+      low_stock_notification(product)
+    end
+  end
+
+  #notifications display
+  def low_stock_notification
+    product = Product.find(params[:id])
+    Turbo::StreamsChannel.broadcast_replace_to(
+      "product_notifications",
+      target: "low_stock_notification_#{product.id}",
+      partial: "products/notification",
+      locals: { product: product }
+    )
   end
 
   private
