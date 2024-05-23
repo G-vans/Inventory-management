@@ -39,7 +39,13 @@
             <span class="badge text-bg-success">Normal Stock</span>
           <% end %>
         </td>
-        <td><%= image_tag(product.image, class: "img-thumbnail", style: "width: 100px; height: 100px;") if product.image.attached? %></td>
+        <td>
+          <% if product.image.attached? %>
+            <p><%= image_tag(product.image, class: 'img-thumbnail', style: "width: 100px; height: 100px;") %></p>
+          <% else %>
+            <p class="badge text-bg-danger">No image available</p>
+          <% end %>
+        </td>
         <td>
           <%= link_to "Show", product_path(product), class: 'btn btn-success' %>
           <%= link_to "Edit", edit_product_path(product), class: "btn btn-primary" %>

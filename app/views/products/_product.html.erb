@@ -1,6 +1,10 @@
 <div id="product_<%= product.id %>">
   <h2><%= product.name %></h2>
-  <p><%= image_tag(product.image, class: "img-thumbnail", style: "width: 200px; height: 200px;") %></p>
+  <% if product.image.attached? %>
+    <p><%= image_tag(product.image, class: 'img-thumbnail', style: "width: 200px; height: 200px;") %></p>
+  <% else %>
+    <p class="badge text-bg-danger">No image available</p>
+  <% end %>
   <p><%= product.description %></p>
   <p>Price: $<%= product.price %></p>
   <p>Stock Level: <%= product.quantity %></p>
