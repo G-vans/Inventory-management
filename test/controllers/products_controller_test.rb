@@ -3,7 +3,7 @@ require "test_helper"
 class ProductsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @product = products(:one)
-    @product.image.attach(io: File.open(Rails.root.join('test', 'fixtures', 'files', 'image.jpg')), filename: 'image.jpg', content_type: 'image/jpg')
+    @product.image.attach(io: File.open(Rails.root.join("test", "fixtures", "files", "image.jpg")), filename: "image.jpg", content_type: "image/jpg")
   end
 
   test "should get index" do
@@ -25,14 +25,14 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should increase stock" do
-    assert_difference('@product.reload.quantity', 1) do
+    assert_difference("@product.reload.quantity", 1) do
       patch increase_stock_product_url(@product, amount: 1)
     end
     assert_redirected_to products_url
   end
 
   test "should decrease stock" do
-    assert_difference('@product.reload.quantity', -1) do
+    assert_difference("@product.reload.quantity", -1) do
       patch decrease_stock_product_url(@product, amount: 1)
     end
     assert_redirected_to products_url

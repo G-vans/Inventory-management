@@ -1,5 +1,5 @@
 class ProductsController < ApplicationController
-  before_action :set_product, only: %i[ show edit update destroy increase_stock decrease_stock ]
+  before_action :set_product, only: %i[show edit update destroy increase_stock decrease_stock]
 
   # GET /products or /products.json
   def index
@@ -8,7 +8,7 @@ class ProductsController < ApplicationController
 
     if @low_stock_products.present?
       low_stock_names = @low_stock_products.map(&:name).join(", ")
-      flash.now[:notice] = "#{low_stock_names} #{'are' if @low_stock_products.count > 1} low on stock"
+      flash.now[:notice] = "#{low_stock_names} #{"are" if @low_stock_products.count > 1} low on stock"
     end
 
     @product = Product.new
@@ -17,8 +17,7 @@ class ProductsController < ApplicationController
       format.html
       format.turbo_stream
     end
-  end  
-  
+  end
 
   # GET /products/1 or /products/1.json
   def show
@@ -71,10 +70,9 @@ class ProductsController < ApplicationController
     end
   end
 
-  #stock increase and decrease
+  # stock increase and decrease
   def increase_stock
-    amount = params[:amount] ? params[:amount].to_i : 1
-    @product.increment!(:quantity, amount)
+    @product.increase_stock(params[:amount])
     respond_to do |format|
       format.html { redirect_to products_url }
       format.turbo_stream
@@ -82,8 +80,7 @@ class ProductsController < ApplicationController
   end
 
   def decrease_stock
-    amount = params[:amount] ? params[:amount].to_i : 1
-    @product.decrement!(:quantity, amount)
+    @product.decrease_stock(params[:amount])
     respond_to do |format|
       format.html { redirect_to products_url }
       format.turbo_stream
@@ -96,25 +93,26 @@ class ProductsController < ApplicationController
     end
   end
 
-  #notifications display
+  # notifications display
   def low_stock_notification
     product = Product.find(params[:id])
     Turbo::StreamsChannel.broadcast_replace_to(
       "product_notifications",
       target: "low_stock_notification_#{product.id}",
       partial: "products/notification",
-      locals: { product: product }
+      locals: {product: product}
     )
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_product
-      @product = Product.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def product_params
-      params.require(:product).permit(:name, :description, :price, :quantity, :image)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_product
+    @product = Product.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def product_params
+    params.require(:product).permit(:name, :description, :price, :quantity, :image)
+  end
 end
