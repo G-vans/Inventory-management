@@ -5,9 +5,5 @@ class Product < ApplicationRecord
 
     has_one_attached :image
 
-
-    def low_stock
-        quantity <= 10
-    end
     
 end
