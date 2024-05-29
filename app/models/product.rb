@@ -5,5 +5,22 @@ class Product < ApplicationRecord
 
     has_one_attached :image
 
+    #search logic
+    def self.search(name)
+        if name.present?
+            search_term ="%#{name.downcase}%"
+            where("lower(name) LIKE ?", search_term)
+        else
+            order(created_at: :desc)
+        end
+    end
+
+    #low stock logic
+    def self.low_stock
+        where("quantity <= ?", 10)
+    end
+    
+    
+
     
 end

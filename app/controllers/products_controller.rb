@@ -3,21 +3,16 @@ class ProductsController < ApplicationController
 
   # GET /products or /products.json
   def index
-    if params[:name].present?
-      search_term = "%#{params[:name].downcase}%"
-      @products = Product.where("lower(name) LIKE ?", search_term)
-    else
-      @products = Product.order(created_at: :desc)
-    end
-    
-    @low_stock_products = @products.select { |product| product.quantity <= 10 }
+    @products = Product.search(params[:name])
+    @low_stock_products = Product.low_stock
+
     if @low_stock_products.present?
       low_stock_names = @low_stock_products.map(&:name).join(", ")
       flash.now[:notice] = "#{low_stock_names} #{'are' if @low_stock_products.count > 1} low on stock"
     end
-  
+
     @product = Product.new
-  
+
     respond_to do |format|
       format.html
       format.turbo_stream
